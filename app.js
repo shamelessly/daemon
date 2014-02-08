@@ -52,11 +52,19 @@ var app = {
 
     stream.on('tweet', function (tweet) {
       var index = tweets.push(tweet);
-      console.log(index-1, 'followers:', tweet.user.followers_count, 'friends',tweet.user.friends_count, tweet.user.screen_name, tweet.text);
+      var info = {
+        index: index-1,
+        text: tweet.text,
+        username : tweet.user.screen_name,
+        followers : tweet.user.followers_count,
+        friends : tweet.user.friends_count
+      };
+      console.log(require('util').inspect(info, true, 10, true));
       
       var swht = _.filter(tweet.entities.hashtags, function(h){
-        return obj.question.toLowerCase() === 'swmontreal';
+        return h.text.toLowerCase() == 'swmontreal';
       });
+      console.log(swht);
       if(swht.length > 0 && users.indexOf(tweet.user.screen_name) === -1) {
         app.model.saveTweet(tweet, function(err, result){
           users.push(tweet.user.screen_name);
