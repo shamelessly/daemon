@@ -53,6 +53,18 @@ var app = {
     stream.on('tweet', function (tweet) {
       var index = tweets.push(tweet);
       console.log(index-1, 'followers:', tweet.user.followers_count, 'friends',tweet.user.friends_count, tweet.user.screen_name, tweet.text);
+      
+      var swht = _.filter(tweet.entities.hashtags, function(h){
+        return obj.question.toLowerCase() === 'swmontreal';
+      });
+      if(swht.length > 0 && users.indexOf(tweet.user.screen_name) === -1) {
+        app.model.saveTweet(tweet, function(err, result){
+          users.push(tweet.user.screen_name);
+          return setTimeout(function(){
+            sendTweet("Hey, @"+tweet.user.screen_name+", so good to hear what you had to say about #SWMontreal. Check out what we did with it!" , tweet.id_str);
+          }, 6000);
+        });
+      }
     });
 
     process.stdin.resume();
@@ -72,14 +84,8 @@ var app = {
       }
       app.model.saveTweet(tweets[index], function(err, result){
         var brand = [];
-        tweet.entities.hashtags.forEach(function(h){
-          if(h.text.toLowerCase() === 'swmontreal' && users.indexOf(tweet.user.screen_name) === -1) {
-            users.push(tweet.user.screen_name);
-            return setTimeout(function(){
-              sendTweet("Hey, @"+tweet.user.screen_name+", so good to hear what you had to say about #SWMontreal. Check out what we did with it!" , tweet.id_str);
-            }, 6000);
-          }
-        });
+
+        //else
         tweet.entities.user_mentions.forEach(function(m){
           accounts.forEach(function(a){
             if(a.substring(1).toLowerCase() == m.screen_name.toLowerCase()){
