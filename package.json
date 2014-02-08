@@ -1,0 +1,18 @@
+{
+  "name": "shamelessly_daemon",
+  "version": "0.0.1",
+  "author": "Shamelessly",
+  "description": "Quick customer acquisition daemon",
+  "dependencies": {
+    "colors": "*",
+    "flatiron": "0.1.x",
+    "optimist": "0.2.x",
+    "union": "0.1.x",
+    "ecstatic": "0.1.x",
+    "plates": "https://github.com/flatiron/plates/tarball/master",
+    "twit": "~1.1.12",
+    "lodash": "~2.4.1",
+    "monk": "~0.7.1"
+  },
+  "license": "MIT"
+}
