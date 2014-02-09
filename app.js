@@ -19,10 +19,10 @@ var shamelesslyapp = {
 };
 
 var shamelesslymtl = {
-  consumer_key: 'P6qHseEl32vpNtoGcEDYxg',
-  consumer_secret: 'ZUiIC70CUTGK7RGGOPi4rhddZokk7EqHKGpHgX63e4w',
-  access_token: '2333897359-UM0ElvXX8muBWkvJxBHJrcF405bTG6b3dk25CPV',
-  access_token_secret: '2edaGWqOdmCOrqviLWes2H9U4Rjkjo9enDsz8FMPB6i52'
+  consumer_key: 'NbvEbR4roVip5urEC1eAg',
+  consumer_secret: 'chbEfp58aieV2zpvOMDB02UdKSM0D7nbYR8Q2oqKWXU',
+  access_token: '2335667106-x5OB78F1IwrMHgQupV4y4QBtvRQQh7HyAd75zrW',
+  access_token_secret: '8ayvZEUT0BYuvheDoKPWiu0fQEvwqsVko6ZLoX3VhFUaz'
 };
 
 function sendTweet(text, idstr){
@@ -45,7 +45,7 @@ var app = {
     app.twclient = new twit(shamelesslymtl);
     bitly.shorten('http://shamelessly.co', function(err, result){
       console.log(require('util').inspect(result, true, 10, true))
-      shortUrl = result.data.url || 'http://shamelessly.co';
+      shortUrl = result.data.url || 'http://j.mp/1f7BeSQ';
       setTimeout(cb, 1);
     });
   },
@@ -74,7 +74,7 @@ var app = {
   start: function(userList, daemon){
     console.log('Start listening...');
 
-    userList = userList || [];
+    // userList = userList || [];
     userList.push('#swmontreal');
     userList.push('#shout');
     // userList = ['#swmontreal'];
@@ -84,6 +84,9 @@ var app = {
     stream.on('tweet', function (tweet) {
 
       if(tweet.user.screen_name.toLowerCase() === "shamelesslyapp"){
+        return;
+      }
+      if(tweet.user.screen_name.toLowerCase() === "shamelessly_app"){
         return;
       }
       var index = tweets.push(tweet);
@@ -152,8 +155,8 @@ var app = {
 
 app.init(function(){
   console.log(require('util').inspect(process.argv[2], true, 10, true))
-  if(process.argv[2] === 'deamon'){
-    app.start([], true);
+  if(process.argv[2] === 'demo'){
+    app.start([]);
   }else{
     app.getList(function(err, result){
       app.start(result);
