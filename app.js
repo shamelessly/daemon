@@ -1,3 +1,4 @@
+var Bitly = require('bitly');
 var twit = require('twit');
 var monk = require('monk');
 var Model = require('./model');
@@ -7,6 +8,8 @@ var _ = require('lodash');
 
 var tweets = [];
 var users = [];
+var bitly = new Bitly('e6df1b39ac4e4de25b4a0896adee7a5756fd0515', '24cc466769067c6bb46caf0538e30886c43780c8');
+var shortUrl = '';
 
 var shamelesslyapp = {
   consumer_key: 't4jGhlS0GGUfXsHENh1rDg',
@@ -23,7 +26,7 @@ var shamelesslymtl = {
 };
 
 function sendTweet(text, idstr){
-  app.twclient.post('statuses/update', {status : text, in_reply_to_status_id: idstr}, function(err){
+  app.twclient.post('statuses/update', {status : text}, function(err){
     if(err){
       console.log(require('util').inspect(err, true, 10, true));
     }
@@ -40,7 +43,11 @@ var app = {
       }, 100);
     }
     app.twclient = new twit(shamelesslymtl);
-    setTimeout(cb, 1);
+    bitly.shorten('http://shamelessly.co', function(err, result){
+      console.log(require('util').inspect(result, true, 10, true))
+      shortUrl = result.data.url || 'http://shamelessly.co';
+      setTimeout(cb, 1);
+    });
   },
 
   getList : function(cb){
@@ -69,6 +76,7 @@ var app = {
 
     userList = userList || [];
     userList.push('#swmontreal');
+    // userList = ['#swmontreal'];
 
     var stream = app.twclient.stream('statuses/filter', { track: userList.join(','), language: 'en, fr, us' });
 
@@ -93,9 +101,10 @@ var app = {
       if(daemon && swht.length > 0 && users.indexOf(tweet.user.screen_name) === -1) {
         users.push(tweet.user.screen_name);
         return setTimeout(function(){
-          var text = _(templates.swmontreal).shuffle().at(0).value().toString();
-          text = text.replace('[customer]', tweet.user.screen_name);
-          sendTweet(text, tweet.id_str);
+          // var text = _(templates.swmontreal).shuffle().at(0).value().toString();
+          // text = text.replace('[customer]', tweet.user.screen_name);
+          var text = 'RT @'+tweet.user.screen_name+ " "+tweet.text + " " + shortUrl;
+          sendTweet(text);
         }, 6000);
       }
     });
@@ -116,24 +125,24 @@ var app = {
         return;
       }
       app.model.saveTweet(tweets[index], function(err, result){
-        var brand = [];
+        // var brand = [];
 
-        //else
-        tweet.entities.user_mentions.forEach(function(m){
-          accounts.forEach(function(a){
-            if(a.substring(1).toLowerCase() == m.screen_name.toLowerCase()){
-              brand.push(a);
-            }
-          });
-        });
-        if(brand.length){
-          var text = _(templates.templates).shuffle().at(0).value().toString();
-          text = text.replace('[customer]', tweet.user.screen_name);
-          text = text.replace('[brand]', brand[0]);
-          setTimeout(function(){
-            sendTweet(text, tweet.id_str);
-          }, 6000);
-        }
+        // //else
+        // tweet.entities.user_mentions.forEach(function(m){
+        //   accounts.forEach(function(a){
+        //     if(a.substring(1).toLowerCase() == m.screen_name.toLowerCase()){
+        //       brand.push(a);
+        //     }
+        //   });
+        // });
+        // if(brand.length){
+          // var text = _(templates.templates).shuffle().at(0).value().toString();
+          // text = text.replace('[customer]', tweet.user.screen_name);
+          // text = text.replace('[brand]', brand[0]);
+        var text = 'RT @' + tweet.user.screen_name + " " + tweet.text + " " + shortUrl;
+        setTimeout(function(){
+          sendTweet(text);
+        }, 6000);
       });
     });
   },
