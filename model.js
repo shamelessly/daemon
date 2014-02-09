@@ -13,6 +13,10 @@ function Model(){
 Model.prototype.init = function() {
   var self = this;
   Db.connect(format("mongodb://%s:%s/shmly?w=1", db_host , Connection.DEFAULT_PORT),function(err,db){
+    if(err){
+      console.log('Error connectin DB... TRY AGAIN');
+      return setTimeout(self.init, 1);
+    }
     self.db = db;
     self.ready = true;
   });
