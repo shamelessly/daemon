@@ -75,7 +75,7 @@ var app = {
     console.log('Start listening...');
 
     userList = userList || [];
-    userList.push('#swmontreal');
+    usersList.push('#swmontreal');
     // userList = ['#swmontreal'];
 
     var stream = app.twclient.stream('statuses/filter', { track: userList.join(','), language: 'en, fr, us' });
@@ -103,7 +103,7 @@ var app = {
         return setTimeout(function(){
           // var text = _(templates.swmontreal).shuffle().at(0).value().toString();
           // text = text.replace('[customer]', tweet.user.screen_name);
-          var text = 'RT @'+tweet.user.screen_name+ " "+tweet.text + " " + shortUrl;
+          var text = 'RT @'+tweet.user.screen_name+ " "+tweet.text;
           sendTweet(text);
         }, 6000);
       }
@@ -139,7 +139,7 @@ var app = {
           // var text = _(templates.templates).shuffle().at(0).value().toString();
           // text = text.replace('[customer]', tweet.user.screen_name);
           // text = text.replace('[brand]', brand[0]);
-        var text = 'RT @' + tweet.user.screen_name + " " + tweet.text + " " + shortUrl;
+        var text = 'RT @' + tweet.user.screen_name + " " + tweet.text;
         setTimeout(function(){
           sendTweet(text);
         }, 6000);
