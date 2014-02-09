@@ -8,6 +8,20 @@ var _ = require('lodash');
 var tweets = [];
 var users = [];
 
+var shamelesslyapp = {
+  consumer_key: 't4jGhlS0GGUfXsHENh1rDg',
+  consumer_secret: '90iswA8ZXPm5snXks1J9x34Gq9zot0qGwtWv1c8CCs',
+  access_token: '2333915352-RFAMKRURCYm2HjY1FOjv2BB6p5qeoRC4xb0yZ6D',
+  access_token_secret: 'T1SukUJx0YyHeMXg6LFirEL0jklI0CYCPx20KECO1qsyJ'
+};
+
+var shamelesslymtl = {
+  consumer_key: 'NDLcU6UNBHCvB5CDh1Hew',
+  consumer_secret: 'NDLcU6UNBHCvB5CDh1Hew',
+  access_token: '2333897359-UM0ElvXX8muBWkvJxBHJrcF405bTG6b3dk25CPV',
+  access_token_secret: '2edaGWqOdmCOrqviLWes2H9U4Rjkjo9enDsz8FMPB6i52'
+};
+
 function sendTweet(text, idstr){
   app.twclient.post('statuses/update', {status : text, in_reply_to_status_id: idstr}, function(err){
     if(err){
@@ -25,12 +39,7 @@ var app = {
         app.init(cb);
       }, 100);
     }
-    app.twclient = new twit({
-      consumer_key: 't4jGhlS0GGUfXsHENh1rDg',
-      consumer_secret: '90iswA8ZXPm5snXks1J9x34Gq9zot0qGwtWv1c8CCs',
-      access_token: '2333915352-RFAMKRURCYm2HjY1FOjv2BB6p5qeoRC4xb0yZ6D',
-      access_token_secret: 'T1SukUJx0YyHeMXg6LFirEL0jklI0CYCPx20KECO1qsyJ'
-    });
+    app.twclient = new twit(shamelesslymtl);
     setTimeout(cb, 1);
   },
 
