@@ -51,7 +51,7 @@ var app = {
     });
   },
 
-  start: function(userList){
+  start: function(userList, daemon){
     console.log('Start listening...');
 
     userList = userList || [];
@@ -61,7 +61,7 @@ var app = {
 
     stream.on('tweet', function (tweet) {
 
-      if(tweet.user.screen_name.toLowerCase === "shamelesslyapp"){
+      if(tweet.user.screen_name.toLowerCase() === "shamelesslyapp"){
         return;
       }
       var index = tweets.push(tweet);
@@ -77,16 +77,13 @@ var app = {
       var swht = _.filter(tweet.entities.hashtags, function(h){
         return h.text.toLowerCase() == 'swmontreal';
       });
-      console.log(swht);
-      if(swht.length > 0 && users.indexOf(tweet.user.screen_name) === -1) {
-        app.model.saveTweet(tweet, function(err, result){
-          users.push(tweet.user.screen_name);
-          return setTimeout(function(){
-            var text = _(templates.swmontreal).shuffle().at(0).value().toString();
-            text = text.replace('[customer]', tweet.user.screen_name);
-            sendTweet(text, tweet.id_str);
-          }, 6000);
-        });
+      if(daemon && swht.length > 0 && users.indexOf(tweet.user.screen_name) === -1) {
+        users.push(tweet.user.screen_name);
+        return setTimeout(function(){
+          var text = _(templates.swmontreal).shuffle().at(0).value().toString();
+          text = text.replace('[customer]', tweet.user.screen_name);
+          sendTweet(text, tweet.id_str);
+        }, 6000);
       }
     });
 
@@ -131,8 +128,13 @@ var app = {
 };
 
 app.init(function(){
-  app.getList(function(err, result){
-    app.start(result);
-  });
+  console.log(require('util').inspect(process.argv[2], true, 10, true))
+  if(process.argv[2] === 'deamon'){
+    app.start([], true);
+  }else{
+    app.getList(function(err, result){
+      app.start(result);
+    });
+  }
 });
 // app.init(app.getList);
