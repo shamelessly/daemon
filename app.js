@@ -61,18 +61,18 @@ var app = {
       };
       console.log(require('util').inspect(info, true, 10, true));
       
-      var swht = _.filter(tweet.entities.hashtags, function(h){
-        return h.text.toLowerCase() == 'swmontreal';
-      });
-      console.log(swht);
-      if(swht.length > 0 && users.indexOf(tweet.user.screen_name) === -1) {
-        app.model.saveTweet(tweet, function(err, result){
-          users.push(tweet.user.screen_name);
-          return setTimeout(function(){
-            sendTweet("Hey, @"+tweet.user.screen_name+", so good to hear what you had to say about #SWMontreal. Check out what we did with it! http://shamelessly.co" , tweet.id_str);
-          }, 6000);
-        });
-      }
+      // var swht = _.filter(tweet.entities.hashtags, function(h){
+      //   return h.text.toLowerCase() == 'swmontreal';
+      // });
+      // console.log(swht);
+      // if(swht.length > 0 && users.indexOf(tweet.user.screen_name) === -1) {
+      //   app.model.saveTweet(tweet, function(err, result){
+      //     users.push(tweet.user.screen_name);
+      //     return setTimeout(function(){
+      //       sendTweet("Hey, @"+tweet.user.screen_name+", so good to hear what you had to say about #SWMontreal. Check out what we did with it! http://shamelessly.co" , tweet.id_str);
+      //     }, 6000);
+      //   });
+      // }
     });
 
     process.stdin.resume();
