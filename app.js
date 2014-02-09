@@ -34,21 +34,27 @@ var app = {
     setTimeout(cb, 1);
   },
 
-  getList : function(){
+  getList : function(cb){
     console.log('get list...');
     app.twclient.get('friends/ids', function(err, result){
       app.twclient.get('users/lookup', {user_id : result.ids.join(',')}, function(err, result){
+        var userList = [];
         result.forEach(function(item){
-          console.log('"@' + item.screen_name + '",');
+          userList.push("@" + item.screen_name);
         });
+        if(cb){
+          cb(null, userList);
+        }else{
+          console.log(userList.join(','));
+        }
       });
     });
   },
 
-  start: function(){
+  start: function(userList){
     console.log('Start listening...');
 
-    var stream = app.twclient.stream('statuses/filter', { track: accounts.join(','), language: 'en, fr, us' });
+    var stream = app.twclient.stream('statuses/filter', { track: userList.join(','), language: 'en, fr, us' });
 
     stream.on('tweet', function (tweet) {
       var index = tweets.push(tweet);
@@ -115,5 +121,9 @@ var app = {
   stop: function(){}
 };
 
-app.init(app.start);
+app.init(function(){
+  app.getList(function(err, result){
+    app.start(result);
+  });
+});
 // app.init(app.getList);
