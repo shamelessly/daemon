@@ -16,8 +16,8 @@ var shamelesslyapp = {
 };
 
 var shamelesslymtl = {
-  consumer_key: 'NDLcU6UNBHCvB5CDh1Hew',
-  consumer_secret: 'NDLcU6UNBHCvB5CDh1Hew',
+  consumer_key: 'P6qHseEl32vpNtoGcEDYxg',
+  consumer_secret: 'ZUiIC70CUTGK7RGGOPi4rhddZokk7EqHKGpHgX63e4w',
   access_token: '2333897359-UM0ElvXX8muBWkvJxBHJrcF405bTG6b3dk25CPV',
   access_token_secret: '2edaGWqOdmCOrqviLWes2H9U4Rjkjo9enDsz8FMPB6i52'
 };
@@ -46,6 +46,10 @@ var app = {
   getList : function(cb){
     console.log('get list...');
     app.twclient.get('friends/ids', function(err, result){
+      if(err){
+        console.log(require('util').inspect(err, true, 10, true))
+      }
+      console.log(require('util').inspect(result, true, 10, true))
       app.twclient.get('users/lookup', {user_id : result.ids.join(',')}, function(err, result){
         var userList = [];
         result.forEach(function(item){
