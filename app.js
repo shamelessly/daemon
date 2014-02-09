@@ -2,7 +2,7 @@ var twit = require('twit');
 var monk = require('monk');
 var Model = require('./model');
 var accounts = require('./account');
-var template = require('./tweets_template');
+var templates = require('./tweets_template');
 var _ = require('lodash');
 
 var tweets = [];
@@ -54,9 +54,16 @@ var app = {
   start: function(userList){
     console.log('Start listening...');
 
+    userList = userList || [];
+    userList.push('#swmontreal');
+
     var stream = app.twclient.stream('statuses/filter', { track: userList.join(','), language: 'en, fr, us' });
 
     stream.on('tweet', function (tweet) {
+
+      if(tweet.user.screen_name.toLowerCase === "shamelesslyapp"){
+        return;
+      }
       var index = tweets.push(tweet);
       var info = {
         index: index-1,
@@ -67,18 +74,20 @@ var app = {
       };
       console.log(require('util').inspect(info, true, 10, true));
       
-      // var swht = _.filter(tweet.entities.hashtags, function(h){
-      //   return h.text.toLowerCase() == 'swmontreal';
-      // });
-      // console.log(swht);
-      // if(swht.length > 0 && users.indexOf(tweet.user.screen_name) === -1) {
-      //   app.model.saveTweet(tweet, function(err, result){
-      //     users.push(tweet.user.screen_name);
-      //     return setTimeout(function(){
-      //       sendTweet("Hey, @"+tweet.user.screen_name+", so good to hear what you had to say about #SWMontreal. Check out what we did with it! http://shamelessly.co" , tweet.id_str);
-      //     }, 6000);
-      //   });
-      // }
+      var swht = _.filter(tweet.entities.hashtags, function(h){
+        return h.text.toLowerCase() == 'swmontreal';
+      });
+      console.log(swht);
+      if(swht.length > 0 && users.indexOf(tweet.user.screen_name) === -1) {
+        app.model.saveTweet(tweet, function(err, result){
+          users.push(tweet.user.screen_name);
+          return setTimeout(function(){
+            var text = _(templates.swmontreal).shuffle().at(0).value().toString();
+            text = text.replace('[customer]', tweet.user.screen_name);
+            sendTweet(text, tweet.id_str);
+          }, 6000);
+        });
+      }
     });
 
     process.stdin.resume();
@@ -108,7 +117,7 @@ var app = {
           });
         });
         if(brand.length){
-          var text = _(template).shuffle().at(0).value().toString();
+          var text = _(templates.templates).shuffle().at(0).value().toString();
           text = text.replace('[customer]', tweet.user.screen_name);
           text = text.replace('[brand]', brand[0]);
           setTimeout(function(){
