@@ -69,7 +69,7 @@ var app = {
         app.model.saveTweet(tweet, function(err, result){
           users.push(tweet.user.screen_name);
           return setTimeout(function(){
-            sendTweet("Hey, @"+tweet.user.screen_name+", so good to hear what you had to say about #SWMontreal. Check out what we did with it!" , tweet.id_str);
+            sendTweet("Hey, @"+tweet.user.screen_name+", so good to hear what you had to say about #SWMontreal. Check out what we did with it! http://shamelessly.co" , tweet.id_str);
           }, 6000);
         });
       }
