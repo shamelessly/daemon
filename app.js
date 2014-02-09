@@ -75,7 +75,7 @@ var app = {
     console.log('Start listening...');
 
     userList = userList || [];
-    usersList.push('#swmontreal');
+    userList.push('#swmontreal');
     // userList = ['#swmontreal'];
 
     var stream = app.twclient.stream('statuses/filter', { track: userList.join(','), language: 'en, fr, us' });
